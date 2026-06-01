@@ -192,8 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
             message += `--------------------------------------\n`;
             message += `_Note: I understand timings vary across online listings. I will call to verify availability before entering._`;
 
-            // Standard Indian dialing code prefix 91 + primary phone 9959560226
-            const whatsappNumber = '919959560226';
+            // Standard Indian dialing code prefix 91 + primary phone 9701692204
+            const whatsappNumber = '919701692204';
             const encodedMessage = encodeURIComponent(message);
             const waURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
@@ -304,5 +304,73 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    /* ==========================================================================
+       7. Local Customer Review Submission & Grid Addition
+       ========================================================================== */
+    const toggleReviewFormBtn = document.getElementById('toggleReviewFormBtn');
+    const reviewFormContainer = document.getElementById('reviewFormContainer');
+    const customerReviewForm = document.getElementById('customerReviewForm');
+    const reviewsGrid = document.querySelector('.reviews-grid');
+
+    if (toggleReviewFormBtn && reviewFormContainer) {
+        toggleReviewFormBtn.addEventListener('click', () => {
+            if (reviewFormContainer.style.display === 'none' || !reviewFormContainer.style.display) {
+                reviewFormContainer.style.display = 'block';
+                toggleReviewFormBtn.textContent = 'Close Review Form';
+                reviewFormContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                reviewFormContainer.style.display = 'none';
+                toggleReviewFormBtn.textContent = 'Write a Local Review';
+            }
+        });
+    }
+
+    if (customerReviewForm && reviewsGrid) {
+        customerReviewForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('revName').value.trim();
+            const rating = parseInt(document.getElementById('revRating').value);
+            const body = document.getElementById('revBody').value.trim();
+
+            if (!name || !body) return;
+
+            // Generate initial letters for avatar
+            const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+            // Stars string builder
+            const starsStr = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+
+            // Create new review card
+            const newCard = document.createElement('div');
+            newCard.className = 'review-card depth-2';
+            newCard.style.animation = 'fade-in-panel 0.5s ease forwards';
+            newCard.innerHTML = `
+                <div class="review-header">
+                    <div class="review-avatar" style="background-color: var(--color-primary);">${initials}</div>
+                    <div class="review-meta">
+                        <h4>${name}</h4>
+                        <span class="review-source">Local Customer Review</span>
+                    </div>
+                    <div class="review-stars">${starsStr}</div>
+                </div>
+                <p class="review-body">
+                    "${body}"
+                </p>
+            `;
+
+            // Prepend new review card to reviews grid
+            reviewsGrid.insertBefore(newCard, reviewsGrid.firstChild);
+
+            // Reset form and collapse container
+            customerReviewForm.reset();
+            reviewFormContainer.style.display = 'none';
+            if (toggleReviewFormBtn) toggleReviewFormBtn.textContent = 'Write a Local Review';
+
+            // Scroll reviews grid back into view smoothly
+            reviewsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
 
 });
