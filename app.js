@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Standard Indian dialing code prefix 91 + primary phone 9701692204
             const whatsappNumber = '919701692204';
             const encodedMessage = encodeURIComponent(message);
-            const waURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+            const waURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
 
             // Redirect user in a new secure window
             window.open(waURL, '_blank');
